@@ -1,0 +1,59 @@
+{
+    "homes": [
+        {
+            "name": "Home 1",
+            "rooms": [
+                {
+                    "devices": [
+                        {
+                            "available": false,
+                            "id": "light123",
+                            "type": "Light"
+                        },
+                        {
+                            "available": false,
+                            "id": "ac567",
+                            "type": "AC"
+                        },
+                        {
+                            "available": false,
+                            "id": "light01",
+                            "type": "Light"
+                        }
+                    ],
+                    "name": "Living Room"
+                },
+                {
+                    "devices": [
+                        {
+                            "available": false,
+                            "id": "fan234",
+                            "type": "Fan"
+                        }
+                    ],
+                    "name": "Bedroom"
+                }
+            ]
+        },
+        {
+            "name": "Nha Cua Huy",
+            "rooms": [
+                {
+                    "devices": [
+                        {
+                            "available": false,
+                            "id": "light456",
+                            "type": "Light"
+                        },
+                        {
+                            "available": true,
+                            "id": "ac01",
+                            "type": "ac"
+                        }
+                    ],
+                    "name": "Phong An"
+                }
+            ]
+        }
+    ]
+}

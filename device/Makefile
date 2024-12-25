@@ -1,30 +1,30 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall
+CXXFLAGS = -std=c++17 -Wall -Iinclude
 
 # Project name
 TARGET = device
 
-# Source files
-SRCS = main.cpp Light.cpp AC.cpp Logger.cpp Fan.cpp NetworkHandler.cpp TimerManager.cpp CommandHandler.cpp Device.cpp RuntimeTracker.cpp AuthenticationManager.cpp Utility.cpp
+# Source files (using wildcard to gather all .cpp files in src/)
+SRCS = main.cpp $(wildcard src/*.cpp)
 
 # Output directory for object files
 OUT_DIR = out
-OBJS = $(addprefix $(OUT_DIR)/, $(SRCS:.cpp=.o))
+OBJS = $(SRCS:src/%.cpp=$(OUT_DIR)/%.o)
 
 # Default rule
 all: $(OUT_DIR) $(TARGET)
 
 # Create output directory if it doesn't exist
 $(OUT_DIR):
-	mkdir -p $(OUT_DIR)
+	@mkdir -p $(OUT_DIR)
 
 # Linking
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 # Compilation
-$(OUT_DIR)/%.o: %.cpp
+$(OUT_DIR)/%.o: src/%.cpp | $(OUT_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Clean up
