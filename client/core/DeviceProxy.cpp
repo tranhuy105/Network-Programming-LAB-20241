@@ -46,6 +46,8 @@ int DeviceProxy::createSocket() {
             throw std::runtime_error("Failed to connect to device after multiple attempts. Closing connection");
         }
     }
+
+    if (socket != -1) deviceReachable = true;
     return socket;
 }
 
@@ -58,6 +60,7 @@ void DeviceProxy::closeSocket() {
 
 // Handle request sending and response
 nlohmann::json DeviceProxy::sendRequest(const nlohmann::json& request) {
+    std::cout << "Sending request: " << request.dump(4) << std::endl;
     int sock = createSocket();
     try {
         std::string requestStr = request.dump();
@@ -81,6 +84,7 @@ nlohmann::json DeviceProxy::sendRequest(const nlohmann::json& request) {
                 throw std::runtime_error("Token expired or invalid.");
             }
 
+            std::cout << response.dump(4) << std::endl;
             return response;
         } catch (const json::exception& e) {
             throw std::runtime_error("Failed to parse response: " + std::string(e.what()));
@@ -88,6 +92,7 @@ nlohmann::json DeviceProxy::sendRequest(const nlohmann::json& request) {
 
     } catch (const std::exception& e) {
         std::cerr << "Error during request/response: " << e.what() << std::endl;
+        markUnreachable();
         closeSocket();
         throw;
     }

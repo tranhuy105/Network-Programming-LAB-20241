@@ -11,6 +11,8 @@ private:
     std::string ipAddress;
     int port;
     int socket;
+    bool deviceReachable = true; // Tracks whether the device is reachable
+
     
     std::string clientId;
     
@@ -25,11 +27,20 @@ public:
     DeviceProxy(const std::string& id, const std::string& type, const std::string& ipAddress, const std::string& clientId, int port);
     virtual ~DeviceProxy();
 
+    bool isReachable() const { return deviceReachable; }
     bool authenticate(const std::string& clientId, const std::string& password);
     bool isAuthenticated() const;
     void turnOn();
     void turnOff();
     void setTimer(int duration, const std::string& action);
+    void markUnreachable() { 
+        deviceReachable = false;
+        token.clear();
+    };
+    void reconnect() {
+        closeSocket(); // Close any existing connection
+        createSocket(); // Attempt to recreate the connection
+    }
     nlohmann::json getInfo();
     nlohmann::json getDetailedInfo();
 

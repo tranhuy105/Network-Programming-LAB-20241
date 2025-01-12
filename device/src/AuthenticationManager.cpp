@@ -38,7 +38,7 @@ json AuthenticationManager::authenticate(const json &request) {
         std::string token = generateTokenInternal();
         activeTokens[clientId] = token;
         // tokenExpiry[clientId] = std::chrono::system_clock::now() + std::chrono::hours(1);
-        tokenExpiry[clientId] = std::chrono::system_clock::now() + std::chrono::minutes(1);
+        tokenExpiry[clientId] = std::chrono::system_clock::now() + std::chrono::minutes(15);
 
         return {
             {"status", 200},

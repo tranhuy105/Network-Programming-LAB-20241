@@ -213,25 +213,37 @@ void renderDeviceDetail(DeviceProxy& device, std::string& clientId) {
     ImGui::BeginChild("Device Detail", ImVec2(0, 0), true);
 
     try {
-        renderBasicInfo(device);
-        renderAuthentication(device, clientId);
-
-        static nlohmann::json cachedDetails;
-        static auto lastUpdate = std::chrono::steady_clock::now();
-        static bool refreshRequested = true;
-
-        if (device.isAuthenticated()) {
-            renderCachedDetails(device, cachedDetails, refreshRequested, lastUpdate);
-
-            if (auto* fan = dynamic_cast<FanProxy*>(&device)) {
-                renderFanControls(*fan, cachedDetails);
-            } else if (auto* ac = dynamic_cast<ACProxy*>(&device)) {
-                renderACControls(*ac, cachedDetails);
+        if (!device.isReachable()) {
+            ImGui::TextColored(ImVec4(1, 0, 0, 1), "Device is unreachable. Please retry connection.");
+            if (ImGui::Button("Reconnect", ImVec2(150, 30))) {
+                try {
+                    // Attempt to reconnect
+                    device.reconnect(); // A new method to attempt reconnection
+                    ImGui::TextColored(ImVec4(0, 1, 0, 1), "Reconnected successfully. Please re-authenticate.");
+                } catch (const std::exception& e) {
+                    ImGui::TextColored(ImVec4(1, 0, 0, 1), "Reconnect failed: %s", e.what());
+                }
             }
+        } else {
+            renderBasicInfo(device);
+            renderAuthentication(device, clientId);
 
-            renderCommonActions(device);
+            static nlohmann::json cachedDetails;
+            static auto lastUpdate = std::chrono::steady_clock::now();
+            static bool refreshRequested = true;
+
+            if (device.isAuthenticated()) {
+                renderCachedDetails(device, cachedDetails, refreshRequested, lastUpdate);
+
+                if (auto* fan = dynamic_cast<FanProxy*>(&device)) {
+                    renderFanControls(*fan, cachedDetails);
+                } else if (auto* ac = dynamic_cast<ACProxy*>(&device)) {
+                    renderACControls(*ac, cachedDetails);
+                }
+
+                renderCommonActions(device);
+            }
         }
-
     } catch (const std::exception& e) {
         ImGui::TextColored(ImVec4(1, 0, 0, 1), "Error rendering device details: %s", e.what());
     }

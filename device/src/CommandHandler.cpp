@@ -39,14 +39,14 @@ json CommandHandler::handleCommand(const json& commandJson) {
 
         // Generic device-related actions
         if (action == "status") {
-            logger.logInfo(device->getId(), "Fetching status for device: " + device->getId());
+            logger.logDebug(device->getId(), "Fetching status for device: " + device->getId());
             return {
                 {"status", 200},
                 {"message", "Status retrieved successfully"},
                 {"data", device->getInfo()}
             };
         } else if (action == "details") {
-            logger.logInfo(device->getId(), "Fetching detailed info for device: " + device->getId());
+            logger.logDebug(device->getId(), "Fetching detailed info for device: " + device->getId());
             return {
                 {"status", 200},
                 {"message", "Detailed info retrieved successfully"},
